@@ -5,18 +5,20 @@ import (
 	"intracs_anpr_api/handlers"
 	. "intracs_anpr_api/types"
 	"net/http"
-	"strconv"
 )
 
-func InsertCapture(w http.ResponseWriter, data ImageCaptured) (*sql.Rows, error) {
+func InsertCapture(w http.ResponseWriter, data ImageCaptured) (sql.Result, error) {
 	// Connect to database
 	db, _ := handlers.DBConnect()
 
 	// Execute insert query
-	insert, err := db.Query(
-		"INSERT INTO captured (device_id, speed, width, height, x1, y1, x2, y2, plate_image, full_image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+	insert, err := db.Exec(
+		"INSERT INTO captured (device_id, speed, plate_detect_conf, text_recog_conf, plate_number, width, height, x1, y1, x2, y2, plate_image, full_image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 		data.DeviceId,
-		strconv.FormatFloat(data.Speed, 'E', 3, 64),
+		data.Speed,
+		data.PlateDetectConf,
+		data.TextRecogConf,
+		data.PlateNumber,
 		data.Width,
 		data.Height,
 		data.PlateCoordinates[0],
@@ -30,7 +32,7 @@ func InsertCapture(w http.ResponseWriter, data ImageCaptured) (*sql.Rows, error)
 	if err != nil {
 		return nil, err
 	}
-	defer insert.Close()
+	// defer insert.Close()
 
 	return insert, nil
 }
