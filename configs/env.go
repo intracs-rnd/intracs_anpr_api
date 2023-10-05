@@ -19,7 +19,7 @@ func init() {
 func GetEnv(key string) string {
 	value, ok := viper.Get(key).(string)
 	if !ok {
-		fmt.Println("Invalid key assertion")
+		fmt.Println("Invalid key assertion. '%s'", key)
 	}
 
 	return value
