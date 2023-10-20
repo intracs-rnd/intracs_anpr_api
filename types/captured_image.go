@@ -6,6 +6,25 @@ import (
 	"strings"
 )
 
+type CapturedInfo struct {
+	Id               int     `json:"id"`
+	DeviceId         string  `json:"device_id"`
+	Speed            float64 `json:"speed"`
+	Width            int     `json:"width"`
+	Height           int     `json:"height"`
+	PlateCoordinates []int   `json:"plate_coordinates"`
+	PlateDetectConf  float64 `json:"plate_detect_conf"`
+	TextRecogConf    float64 `json:"text_recog_conf"`
+	PlateNumber      string  `json:"plate_number"`
+	CapturedAt       string  `json:"captured_at"`
+}
+
+type CapturedImage struct {
+	Id         int    `json:"id"`
+	PlateImage string `json:"plate_image"`
+	FullImage  string `json:"full_image"`
+}
+
 type ImageCapture interface {
 	FromRequest(id string, w http.ResponseWriter, r *http.Request) (ImageCaptured, error)
 	FromString(id string,
@@ -19,18 +38,18 @@ type ImageCapture interface {
 }
 
 type ImageCaptured struct {
-	Id               string
-	DeviceId         string
-	Speed            float64
-	Width            int
-	Height           int
-	PlateCoordinates []int
-	PlateDetectConf  float64
-	TextRecogConf    float64
-	PlateNumber      string
-	PlateImage       string
-	FullImage        string
-	CapturedAt       string
+	Id               string  `json:"id"`
+	DeviceId         string  `json:"device_id"`
+	Speed            float64 `json:"speed"`
+	Width            int     `json:"width"`
+	Height           int     `json:"height"`
+	PlateCoordinates []int   `json:"plate_coordinates"`
+	PlateDetectConf  float64 `json:"plate_detect_conf"`
+	TextRecogConf    float64 `json:"text_recog_conf"`
+	PlateNumber      string  `json:"plate_number"`
+	PlateImage       string  `json:"plate_image"`
+	FullImage        string  `json:"full_image"`
+	CapturedAt       string  `json:"captured_at"`
 }
 
 func (data ImageCaptured) FromRequest(id string, w http.ResponseWriter, r *http.Request) (ImageCaptured, error) {

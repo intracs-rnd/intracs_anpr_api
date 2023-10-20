@@ -1,4 +1,4 @@
-package configs
+package env
 
 import (
 	"fmt"
@@ -16,7 +16,7 @@ func init() {
 	}
 }
 
-func GetEnv(key string) string {
+func Get(key string) string {
 	value, ok := viper.Get(key).(string)
 	if !ok {
 		fmt.Println("Invalid key assertion. '%s'", key)
