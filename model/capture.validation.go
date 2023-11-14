@@ -11,10 +11,10 @@ type CaptureValidation struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-type ValidationReason struct {
-	Code      int       `gorm:"primaryKey" json:"code"`
-	Reason    string    `json:"reason"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	DeletedAt time.Time `json:"deleted_at"`
-}
+// type ValidationReason struct {
+// 	Code      int       `gorm:"primaryKey" json:"code"`
+// 	Reason    string    `json:"reason"`
+// 	CreatedAt time.Time `json:"created_at"`
+// 	UpdatedAt time.Time `json:"updated_at"`
+// 	DeletedAt time.Time `json:"deleted_at"`
+// }

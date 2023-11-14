@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	// Third party
@@ -11,7 +12,9 @@ import (
 	"intracs_anpr_api/api"
 	"intracs_anpr_api/controller"
 	"intracs_anpr_api/database"
+	"intracs_anpr_api/internal/env"
 	"intracs_anpr_api/repository"
+	"intracs_anpr_api/route"
 )
 
 func main() {
@@ -19,29 +22,15 @@ func main() {
 	repos := repository.InitRepositories(db)
 	controllers := controller.InitControllers(repos)
 	api := api.InitApi(controllers)
+	router := route.GetAll(api)
 
-	// Users API
-	http.HandleFunc("/api/v1/login", api.User.Login)
+	appUrl := env.Get("APP_URL")
+	if appUrl == "" {
+		appUrl = "http://localhost:8881"
+	}
 
-	// Captures API
-	captureApi := api.Capture
-	http.HandleFunc("/api/v1/capture", captureApi.Read)
-	http.HandleFunc("/api/v1/capture/add", captureApi.Create)
-	http.HandleFunc("/api/v1/capture/image", captureApi.GetImage)
-	http.HandleFunc("/api/v1/capture/image/plate", captureApi.GetPlateImage)
-	http.HandleFunc("/api/v1/capture/image/full", captureApi.GetFullImage)
-	http.HandleFunc("/api/v1/capture/count", captureApi.Count)
-	http.HandleFunc("/api/v1/capture/count/today", captureApi.Count)
-	http.HandleFunc("/api/v1/capture/detection/count", captureApi.DetectedCount)
-	http.HandleFunc("/api/v1/capture/recognition/count", captureApi.RecognizedCount)
-	http.HandleFunc("/api/v1/capture/validated/count", captureApi.ValidatedCount)
-	http.HandleFunc("/api/v1/capture/unvalidated/count", captureApi.UnValidatedCount)
-
-	// Captures Validation API
-	capValidationApi := api.CaptureValidation
-	http.HandleFunc("/api/v1/capture/validation/valid/count", capValidationApi.ValidCount)
-	http.HandleFunc("/api/v1/capture/validation/invalid/count", capValidationApi.InvalidCount)
-
-	fmt.Println("Starting API server at http://localhost:8881/")
-	http.ListenAndServe(":8881", nil)
+	fmt.Printf("Starting API server at %s\n", appUrl)
+	log.Fatal(
+		http.ListenAndServe(appUrl, router),
+	)
 }
