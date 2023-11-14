@@ -18,6 +18,10 @@ func GetDatabase() *gorm.DB {
 	user := env.Get("DB_USER")
 	password := env.Get("DB_PASSWORD")
 
+	if password != "" {
+		password = ":" + password
+	}
+
 	src := user + password + "@tcp(" + host + ":" + port + ")/" + name + "?charset=utf8mb4&parseTime=true&loc=Local"
 	sqlDB, err := sql.Open(driver, src)
 	if err != nil {
