@@ -48,7 +48,3 @@ func toStartDateStr(date string) string {
 func toEndDateStr(date string) string {
 	return fmt.Sprintf("%s 23:59:59", date)
 }
-
-func toBetweenDateStr(date string) string {
-	return fmt.Sprintf("BETWEEN %s 00:00:00 AND %s 23:59:59")
-}
