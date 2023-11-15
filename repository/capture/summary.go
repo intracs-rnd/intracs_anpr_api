@@ -48,7 +48,7 @@ func (repo *CaptureRepo) SummaryDateListBetweenDate(pageFilter types.PageFilter,
 
 	q := repo.db.Table("captures")
 	q.Select("DATE(captured_at)")
-	q.Where("DATE(captured_at) BETWEEN ? AND ?", dateFilter.StartDateString(), dateFilter.EndDateString())
+	q.Where("captured_at BETWEEN ? AND ?", toStartDateStr(dateFilter.StartDateString()), toEndDateStr(dateFilter.EndDateString()))
 	q.Group("DATE(captured_at)")
 	q.Limit(int(pageFilter.Limit))
 	q.Offset(int(pageFilter.GetOffset()))

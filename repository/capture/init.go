@@ -1,6 +1,10 @@
 package capture
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+
+	"gorm.io/gorm"
+)
 
 type CaptureRepo struct {
 	db *gorm.DB
@@ -35,4 +39,16 @@ func getDefaultFields() []string {
 		"IFNULL(validation_reasons.reason, 'Belum divalidasi') AS validation_reason_text",
 		"captured_at",
 	}
+}
+
+func toStartDateStr(date string) string {
+	return fmt.Sprintf("%s 00:00:00", date)
+}
+
+func toEndDateStr(date string) string {
+	return fmt.Sprintf("%s 23:59:59", date)
+}
+
+func toBetweenDateStr(date string) string {
+	return fmt.Sprintf("BETWEEN %s 00:00:00 AND %s 23:59:59")
 }

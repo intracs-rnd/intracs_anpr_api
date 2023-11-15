@@ -48,9 +48,9 @@ func (repo *CaptureRepo) Read(page types.PageFilter, withPlateImage bool, date t
 
 	q := repo.db.Table("captures").Select([]string{"id", "is_valid"})
 	if date.IsSingleDateValid() {
-		q.Where("DATE(captured_at) = ?", date.DateString())
+		q.Where("captured_at ?", toBetweenDateStr(date.DateString()))
 	} else if date.IsBetweenDateValid() {
-		q.Where("DATE(captured_at) BETWEEN ? AND ?", date.StartDateString(), date.EndDateString())
+		q.Where("captured_at BETWEEN ? AND ?", toStartDateStr(date.StartDateString()), toEndDateStr(date.EndDateString()))
 	}
 	q = getValidationStatusFilter(q, validationStatus)
 
@@ -62,9 +62,9 @@ func (repo *CaptureRepo) Read(page types.PageFilter, withPlateImage bool, date t
 	q = repo.db.Table("captures").Select(fields)
 	q.Joins("JOIN validation_reasons ON captures.validation_reason_code = validation_reasons.code")
 	if date.IsSingleDateValid() {
-		q.Where("DATE(captured_at) = ?", date.DateString())
+		q.Where("captured_at ?", toBetweenDateStr(date.DateString()))
 	} else if date.IsBetweenDateValid() {
-		q.Where("DATE(captured_at) BETWEEN ? AND ?", date.StartDateString(), date.EndDateString())
+		q.Where("captured_at BETWEEN ? AND ?", toStartDateStr(date.StartDateString()), toEndDateStr(date.EndDateString()))
 	}
 	q = getValidationStatusFilter(q, validationStatus)
 	q.Limit(int(page.Limit)).
