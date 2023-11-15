@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"intracs_anpr_api/internal/env"
+	"log"
 	"time"
 
 	"gorm.io/driver/mysql"
@@ -18,6 +19,10 @@ func GetDatabase() *gorm.DB {
 	user := env.Get("DB_USER")
 	password := env.Get("DB_PASSWORD")
 
+	if port == "" {
+		port = "3306"
+	}
+
 	if password != "" {
 		password = ":" + password
 	}
@@ -25,7 +30,7 @@ func GetDatabase() *gorm.DB {
 	src := user + password + "@tcp(" + host + ":" + port + ")/" + name + "?charset=utf8mb4&parseTime=true&loc=Local"
 	sqlDB, err := sql.Open(driver, src)
 	if err != nil {
-		fmt.Println("SQL connection have problem", err)
+		log.Fatal("SQL connection have problem", err)
 	}
 
 	db, err := gorm.Open(mysql.New(mysql.Config{Conn: sqlDB}), &gorm.Config{
@@ -35,8 +40,15 @@ func GetDatabase() *gorm.DB {
 		},
 	})
 	if err != nil {
-		fmt.Println("Cannot connect to database", err)
+		log.Fatal("Can't connect to database, cause:", err)
 	}
 
+	// Remove ONLY_FULL_GROUP_BY on sql_mode
+	db.Raw("SET PERSIST sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))")
+	if db.Error != nil {
+		log.Fatal("Can't remove ONLY_FULL_GROUP_BY on sql mode, cause:", err)
+	}
+
+	fmt.Printf("Connected to database %s:%s\n", host, port)
 	return db
 }
